@@ -1,0 +1,4 @@
+# Vagrant VMs
+simple/.vagrant
+multivmstatic/.vagrant
+multivmdynamic/.vagrant
