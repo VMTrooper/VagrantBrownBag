@@ -3,10 +3,9 @@
 # vagrant up --provider=vmware_fusion
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "precise64"
-  #config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+  config.vm.box = "precise64O"
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 end
-  config.vm.box = "precise64"
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
