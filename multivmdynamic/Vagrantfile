@@ -1,31 +1,24 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-nodes = {
-'nova' => [1, 200],
-'neutron' => [1, 210],
+
+# Vagrantfile
+# Author: Trevor Roberts Jr (VMTrooper@gmail.com)
+nodelist = {
+'controller' => 200,
+'compute' => 210,
 }
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "precise64O"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-  nodes.each do |prefix, (count, ip_start)|
-    count.times do |i|
-      hostname = "%s-%02d" % [prefix, (i+1)]
-      config.vm.define "#{hostname}" do |box|
-        box.vm.hostname = "#{hostname}.vBrownBag"
-        box.vm.network :private_network, ip: "178.16.172.#{ip_start+i}", :netmask => "255.255.255.0"
-        box.vm.network :private_network, ip: "178.16.200.#{ip_start+i}", :netmask => "255.255.255.0"
-        #box.vm.provision :shell, :path => "#{prefix}.sh"
-        box.vm.provision :puppet
-        # If using Fusion
-        box.vm.provider :vmware_fusion do |v|
-          v.vmx["memsize"] = 1024
-        end
-        # Otherwise using VirtualBox
-        box.vm.provider :virtualbox do |vbox|
-          vbox.customize ["modifyvm", :id, "--memory", 1024]
-        end
-      end
+  config.vm.box = "precise64_nocm"
+  config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/ubuntu-server-12042-x64-vbox4210-nocm.box"
+
+  nodelist.each do |prefix, fourth_octet|
+    config.vm.define "#{prefix}" do |box|
+      box.vm.hostname = "#{prefix}.puppet.local"
+      box.vm.network :private_network, ip: "192.168.10.#{ip_start+i}", :netmask => "255.255.255.0"
+      box.vm.network :public_network
+      #box.vm.provision :shell, :path => "#{prefix}.sh"
+      #box.vm.provision :puppet
     end
   end
 end
