@@ -6,17 +6,19 @@ nodes = {
 }
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "precise64O"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.box = "hashicorp/precise64"
   nodes.each do |prefix, (count, ip_start)|
     count.times do |i|
       hostname = "%s-%02d" % [prefix, (i+1)]
       config.vm.define "#{hostname}" do |box|
         box.vm.hostname = "#{hostname}.vBrownBag"
+        # Setting up private networking in case you want to pre-populate DNS.  These IP's are NAT'ed so you can still reach the Internet, apt-get, etc.
         box.vm.network :private_network, ip: "178.16.172.#{ip_start+i}", :netmask => "255.255.255.0"
         box.vm.network :private_network, ip: "178.16.200.#{ip_start+i}", :netmask => "255.255.255.0"
+        # If you want to use Shell provisioning, create shell scripts with the name of the VM (i.e. nova.sh, neutron.sh) in the same directory as your Vagrantfile and uncomment the following line
         #box.vm.provision :shell, :path => "#{prefix}.sh"
         box.vm.provision :puppet
+        # Puppet manifests can be found and edited in the manifests subdirectory
         # If using Fusion
         box.vm.provider :vmware_fusion do |v|
           v.vmx["memsize"] = 1024
